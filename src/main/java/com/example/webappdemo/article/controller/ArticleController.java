@@ -4,43 +4,55 @@ import com.example.webappdemo.article.repository.ArticleRepository;
 import com.example.webappdemo.article.service.ArticleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RestController("/article")
+@RestController
+@RequestMapping("/articles")
 @AllArgsConstructor
 public class ArticleController {
     private final ArticleService articleService;
 
-
-
     /**
-     * 특정 게시글 읽어오는 메서드
-     * @param id
+     * 게시글 생성하는 컨트롤러
+     * @return String
      */
-    @GetMapping("/{id}")
-    public void readOne(
-            @PathVariable String id
+    @PostMapping()
+    public String createArticle(
+
     ){
-        log.info("id: " + id);
-        articleService.readOne();
+        return articleService.createArticle();
     }
 
     /**
-     * 게시글 페이징해서 읽어오는 메서드
+     * 게시글 페이징해서 읽어오는 컨트롤러
+     * @return String
      */
     @GetMapping()
-    public void read(
-            @RequestParam("offset")
-            Long offset,
-            @RequestParam("limit")
-            Long limit
-    ){
+    public String readAll(
+            @RequestParam(value = "offset", defaultValue = "0")
+            Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20")
+            Integer limit
+    ) {
         log.info("offset: " + offset);
         log.info("limit: " + limit);
+        return articleService.readAll(offset, limit);
+    }
+
+    /**
+     * 특정 게시글 읽어오는 컨트롤러
+     *
+     * @param id
+     * @return String
+     */
+    @GetMapping("/{id}")
+    public String readOne(
+            @PathVariable Long id
+    ) {
+        log.info("id: " + id);
+        return articleService.readOne(id);
     }
 
 
